@@ -9,7 +9,8 @@
 #define BUFF_SIZE  255
 
 bool isTextFile(char* filename, int size);
-void copyContentsFileToFIle(int fdInput, int fdOutput);
+void myCopy(int fdInput, int fdOutput);
+
 
 int main(int argc, char *argv[]){
 	if (argc != 3){
@@ -17,11 +18,13 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 	
+	// Check if input file is a text file
 	if (!isTextFile( argv[1], strlen(argv[1])) ){
 		printf("Input file is not txt.\n");
 		return -1;
 	}
 	
+	// Check if output file is a text file 
 	if (!isTextFile( argv[1], strlen(argv[1])) ){
 		printf("Output file is not txt.\n");
 		return -1;
@@ -42,29 +45,9 @@ int main(int argc, char *argv[]){
 		printf("Unable to open output file. Please try again.\n");
 	}
 
-	char copyString[BUFF_SIZE];
-	ssize_t c;
-	while( c = read(fdInput, copyString, BUFF_SIZE), c > 0 ){
-		write(fdOutput, copyString, c);
-	}
-
-	write(fdOutput, "\n\n", 2);
+	// Run function to run "mycopy" instructions
+	myCopy(fdInput, fdOutput);
 	
-	char userName[] = "Diego Rosenberg\n";
-	int userNameLength = strlen(userName);
-	write(fdOutput, userName, userNameLength);
-	
-	// Returns userID as seen by the computer
-	uid_t userID = getuid();
-	
-	// To make it human readable we have to convert it into a string with 32 bit space (due to uid_t of 32 bits).
-	char tmp[12] = {0x0};
-	sprintf(tmp, "%11d", userID);
-	write(fdOutput, tmp, sizeof(tmp));
-	write(fdOutput, "\n", 1);
-
-		
-
 	// Before closing file we can change the permissions of the created file to allow viewing and future modification.
 	//	(0#####) indicates octal number in C.
 	// Permissions set:
@@ -85,4 +68,28 @@ bool isTextFile(char* filename, int size){
 		return true;
 
 	return false;	
+}
+
+void myCopy(int fdInput, int fdOutput){
+	char copyString[BUFF_SIZE];
+	ssize_t c;
+	while( c = read(fdInput, copyString, BUFF_SIZE), c > 0 ){
+		write(fdOutput, copyString, c);
+	}
+
+	write(fdOutput, "\n\n", 2);
+	
+	char userName[] = "Diego Rosenberg\n";
+	int userNameLength = strlen(userName);
+	write(fdOutput, userName, userNameLength);
+	
+	// Returns userID as seen by the computer
+	uid_t userID = getuid();
+	
+	// To make it human readable we have to convert it into a string with 32 bit space (due to uid_t of 32 bits).
+	char tmp[12] = {0x0};
+	sprintf(tmp, "%d", userID);
+	write(fdOutput, tmp, sizeof(tmp));
+	write(fdOutput, "\n", 1);
+
 }
