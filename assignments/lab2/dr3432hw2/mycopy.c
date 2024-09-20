@@ -15,32 +15,40 @@ void myCopy(int fdInput, int fdOutput);
 int main(int argc, char *argv[]){
 	if (argc != 3){
 		printf("Error, did not input the correct number of inputs (2)\n");
-		return -1;
+		_exit(1);
 	}
 	
 	// Check if input file is a text file
 	if (!isTextFile( argv[1], strlen(argv[1])) ){
 		printf("Input file is not txt.\n");
-		return -1;
+		_exit(1);
 	}
 	
 	// Check if output file is a text file 
 	if (!isTextFile( argv[1], strlen(argv[1])) ){
 		printf("Output file is not txt.\n");
-		return -1;
+		_exit(1);
 	}
-	
+
 	// Open file with O_RDONLY flag to specify this file can only be read.
 	int fdInput = open(argv[1], O_RDONLY);
 	if (fdInput == -1){
 		printf("Unable to open input file. Please try again.\n");
+		_exit(1);
 	}
+
+	// If input file already exists mark error.
+	//	- mode F_OK is used for existance test.
+	if (access(argv[2], F_OK) == 0){
+		printf("Output file already exists, please delete or utilize different name.\n");
+		_exit(-1);
+	}
+
 
 	// Open file with the following flags:
 	//	- O_WROLNY: Open with read and write privileges.
 	//	- O_CREAT: File is to be created with filename argv[2] if it does not exist.
-	//	- O_TRUNC: If file already exists allows writing and will be truncated to length 0.
-	int fdOutput = open(argv[2], O_WRONLY | O_CREAT | O_TRUNC); 
+	int fdOutput = open(argv[2], O_WRONLY | O_CREAT); 
 	if (fdOutput == -1){
 		printf("Unable to open output file. Please try again.\n");
 	}
