@@ -3,7 +3,7 @@
 # if KERNELRELEASE is defined, we've invoked from the 
 # kernel build system and it can use its language.
 ifneq ($(KERNELRELEASE),)
-	obj-m := simple.o
+	obj-m := lab3.o
 
 # Otherwise we were called direcly from the command line
 # invoke kernel build system.
