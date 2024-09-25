@@ -4,7 +4,7 @@
 #include <linux/timekeeping.h>
 #include <linux/ktime.h>
 
-MODULE_LICENSE("Dual DSD/GPL");
+MODULE_LICENSE("Dual BSD/GPL");
 unsigned long jiffiesStartTimeStamp;
 s64 kTimeStartTimeStamp;
 
@@ -18,10 +18,10 @@ static int hello_init(void){
 
 static void hello_exit(void){
 	unsigned long jiffiesTimeTakenMs = 1000 * (jiffies -jiffiesStartTimeStamp) / HZ;
-	//long long kTimeTakenMs = (ktime_get_boottime() - kTimeStartTimeStamp);
+	long long kTimeTakenMs = (ktime_to_ms(ktime_get_boottime()) - kTimeStartTimeStamp);
 	printk(KERN_ALERT "Goodbye, cruel world\n");
 	printk(KERN_ALERT "Jiffies Insertion to Removal Time (ms): %li\n", jiffiesTimeTakenMs);
-	//printk(KERN_ALERT "K_Time Insertion to Removal Time (ms): %lli\n", kTimeTakenMs);
+	printk(KERN_ALERT "K_Time Insertion to Removal Time (ms): %lli\n", kTimeTakenMs);
 
 }
 
