@@ -3,7 +3,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-
 int main (int argc, char* argv[]){
 	pid_t c1 = -1, c2 = -2, c3 =-3, c4 = -4;
 	
@@ -16,7 +15,7 @@ int main (int argc, char* argv[]){
 		exit(1);
 	} 
 	// If c1 == 0 (i.e. in child process of parent) run below code
-	if (c1 == 0){
+	else if (c1 == 0){
 		// Since we are in child process of parent, create new fork c3 as child 3.
 		c3 = fork();
 		// If returned value is negative (i.e. fork failed) exit.
@@ -46,7 +45,6 @@ int main (int argc, char* argv[]){
 			}
 		}
 	}
-
 	return 0;
 }
 
@@ -55,12 +53,12 @@ int main (int argc, char* argv[]){
 Parent
 |
 |-------Child 1 (Created initially)
-|					|
-|					|--------Child 3 (Created after confirming inside c1)
+|         |
+|         |--------Child 3 (Created after confirming inside c1)
 |
 |
 |-------Child 2 (Created at else block of first if-else)
-|					|
-|					|--------Child 3 (Created after confirming inside c2)
+|         |
+|         |--------Child 3 (Created after confirming inside c2)
 */
 
