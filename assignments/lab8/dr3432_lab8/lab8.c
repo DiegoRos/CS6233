@@ -56,6 +56,8 @@ static int lab8_init_module(void){
 static void lab8_exit_module(void){
 	printk(KERN_ALERT "Goodbye, cruel world\n");
 
+
+	misc_deregister(&lab8_device);
 }
 
 // Driver "open()" function, named labOpen()
