@@ -5,7 +5,6 @@
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
 #include <asm/errno.h>
-#include <linux/unistd.h>
 #include <linux/cred.h>
 
 //Load module license
@@ -20,8 +19,10 @@ MODULE_LICENSE("Dual BSD/GPL");
 // Variable for device being open, prevents multiple opens
 static int Device_Open = 0;
 
-// Global variable with user id
-static kuid_t user_id;
+// Global variable with user id (max # of digits for kuid_t is 20, unsigned 64-bit int)
+//	Therfore maximum size is 20 digits + null char
+#define MAX_USER_ID 21
+static char user_id[21];
 
 // Static struct with misc device structure
 static struct miscdevice lab8_device;
@@ -66,8 +67,11 @@ static int labOpen(struct inode *inode, struct file *file){
 	if (Device_Open) return -EBUSY;
 	Device_Open++;
 
-	user_id = current_uid();
-	printk(KERN_ALERT "Driver opened\n");
+	struct cred process_credentials = 
+	unsigned int current_user_id = current_uid();
+	sprintf(user_id, "%u", (unsigned int)current_user_id);
+	
+	printk(KERN_ALERT "Driver opened, %u\n", current_user_id);
 
 	return 0;
 }
@@ -75,7 +79,7 @@ static int labOpen(struct inode *inode, struct file *file){
 // Driver "read()" function, named labRead()
 static ssize_t labRead(struct file *fp, char *buffer, size_t length, loff_t *offset){
 	int bytes_read = 0;
-
+	
 	// If we are at end of message, return 0 signifying end of file
 	
 	return 0;
