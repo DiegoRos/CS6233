@@ -69,9 +69,9 @@ static int labOpen(struct inode *inode, struct file *file){
 	if (Device_Open) return -EBUSY;
 	Device_Open++;
 
-	pid_t current_user_id = current->pid;
+	kuid_t current_user_id = current->cred->uid;
 
-	sprintf(user_id, "%d", current_user_id);
+	sprintf(user_id, "%d", __kuid_val(current_user_id));
 
 	return 0;
 }
