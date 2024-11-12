@@ -13,5 +13,9 @@ else
 
 default:
 	$(MAKE) -C $(KERNELDIR) M=$(PWD) modules
-
+	
 endif
+
+test: 
+	gcc -o test test.c
+

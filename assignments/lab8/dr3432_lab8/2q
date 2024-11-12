@@ -37,6 +37,7 @@ static struct file_operations fops = {
 	.owner = THIS_MODULE,
 	.read = labRead,
 	.open = labOpen,
+	.release = customRelease,
 };
 
 
@@ -46,7 +47,6 @@ static int lab8_init_module(void){
 	lab8_device.minor = MISC_DYNAMIC_MINOR;
 	lab8_device.name = DEVICE_NAME;
 	lab8_device.fops = &fops;
-	lab8_device.mode = 0666;
 	retval = misc_register(&lab8_device);
 	// If error return retval.
 	if (retval) return retval;
@@ -72,6 +72,7 @@ static int labOpen(struct inode *inode, struct file *file){
 	pid_t current_user_id = current->pid;
 
 	sprintf(user_id, "%d", current_user_id);
+	
 
 	return 0;
 }
@@ -97,6 +98,13 @@ static ssize_t labRead(struct file *fp, char *buffer, size_t length, loff_t *off
 
 	return length;
 }
+
+// Added release function so that we can open the file more than once.
+int labRelease(struct inode *inode, struct file *file){
+	printk(KERN_ALERT "File released\n");
+	return 0;
+}
+
 
 
 // Module init and exit calling
