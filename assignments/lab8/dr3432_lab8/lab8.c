@@ -5,6 +5,7 @@
 #include <linux/miscdevice.h>
 #include <linux/fs.h>
 #include <asm/errno.h>
+#include <linux/sched.h>
 #include <linux/cred.h>
 
 //Load module license
@@ -67,11 +68,11 @@ static int labOpen(struct inode *inode, struct file *file){
 	if (Device_Open) return -EBUSY;
 	Device_Open++;
 
-	struct cred process_credentials = 
-	unsigned int current_user_id = current_uid();
-	sprintf(user_id, "%u", (unsigned int)current_user_id);
+	pid_t current_user_id = current->pid;
+
+	sprintf(user_id, "%d", current_user_id);
 	
-	printk(KERN_ALERT "Driver opened, %u\n", current_user_id);
+	printk(KERN_ALERT "Driver opened, %d\n", current_user_id);
 
 	return 0;
 }
